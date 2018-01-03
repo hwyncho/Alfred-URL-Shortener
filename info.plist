@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.hwyncho.url-shortener</string>
+	<key>category</key>
+	<string>Productivity</string>
+	<key>connections</key>
+	<dict>
+		<key>16039760-F173-4AB8-9C73-DA7401D5DE23</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>E4C20916-D24C-4573-AE04-6A79ABBA87FF</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>CC199D25-C94C-4668-82DD-2628B4E6B95C</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>2C99F6F1-EF16-4CF1-9762-5D05A1FFAA4D</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>16039760-F173-4AB8-9C73-DA7401D5DE23</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>hwyn.cho</string>
+	<key>description</key>
+	<string>Simplify your links with Google.</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>url-shortener</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>E4C20916-D24C-4573-AE04-6A79ABBA87FF</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>68</integer>
+				<key>script</key>
+				<string>#-*- coding: utf-8 -*-
+#!/usr/bin/python
+
+"""
+Created by 조휘연 on 2018. 01. 02.
+Copyright © 2018년 조휘연. All rights reserved.
+==================================================
+GitHub : https://github.com/hwyncho/Alfred-URL-Shortener/
+e-mail : hwyn.cho@gmail.com
+"""
+
+import json
+import sys
+
+try:
+    from urllib.request import Request, urlopen
+except ImportError:
+    from urllib2 import Request, urlopen
+
+
+def url_shorten(long_url):
+    """
+    Shorten URL with Google API.
+
+    :param long_url: str
+        Long URL
+
+    :return short_url: str
+        Short URL
+    """
+    try:
+        api_key = 'AIzaSyCnj0Ff5xrX-QFX4lrXLRrqzFAU-nfSmYk'
+
+        url = 'https://www.googleapis.com/urlshortener/v1/url?key={0}'.format(
+            api_key)
+
+        data = json.dumps({'longUrl': long_url}).encode('utf-8')
+        headers = {'Content-Type': 'application/json',
+                   'Content-Length': str(len(data))}
+
+        req = Request(url=url, headers=headers)
+        res = urlopen(url=req, data=data).read().decode('utf-8')
+
+        short_url = json.loads(res)['id']
+
+        return short_url
+    except Exception as err:
+        return str(err)
+
+
+if __name__ == '__main__':
+    q = "{query}"
+    sys.stdout.write(url_shorten(q))</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>3</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>16039760-F173-4AB8-9C73-DA7401D5DE23</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>goo.gl</string>
+				<key>subtext</key>
+				<string>Simplify your links with Google.</string>
+				<key>text</key>
+				<string>URL Shortener</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>2C99F6F1-EF16-4CF1-9762-5D05A1FFAA4D</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<false/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string>{query}</string>
+				<key>title</key>
+				<string>URL Shortener</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>CC199D25-C94C-4668-82DD-2628B4E6B95C</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string></string>
+	<key>uidata</key>
+	<dict>
+		<key>16039760-F173-4AB8-9C73-DA7401D5DE23</key>
+		<dict>
+			<key>xpos</key>
+			<integer>350</integer>
+			<key>ypos</key>
+			<integer>200</integer>
+		</dict>
+		<key>2C99F6F1-EF16-4CF1-9762-5D05A1FFAA4D</key>
+		<dict>
+			<key>xpos</key>
+			<integer>30</integer>
+			<key>ypos</key>
+			<integer>200</integer>
+		</dict>
+		<key>CC199D25-C94C-4668-82DD-2628B4E6B95C</key>
+		<dict>
+			<key>xpos</key>
+			<integer>700</integer>
+			<key>ypos</key>
+			<integer>270</integer>
+		</dict>
+		<key>E4C20916-D24C-4573-AE04-6A79ABBA87FF</key>
+		<dict>
+			<key>xpos</key>
+			<integer>700</integer>
+			<key>ypos</key>
+			<integer>150</integer>
+		</dict>
+	</dict>
+	<key>webaddress</key>
+	<string>https://github.com/hwyncho/Alfred-URL-Shortener/</string>
+</dict>
+</plist>
